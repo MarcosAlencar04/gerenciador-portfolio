@@ -16,6 +16,7 @@ import com.example.gerenciador_portfolio.dto.MembroRequestDTO;
 import com.example.gerenciador_portfolio.dto.MembroResponseDTO;
 import com.example.gerenciador_portfolio.entity.Membro;
 import com.example.gerenciador_portfolio.external.MembroClient;
+import com.example.gerenciador_portfolio.repository.MembroRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class MembroServiceTest {
@@ -23,6 +24,9 @@ public class MembroServiceTest {
     @InjectMocks
     private MembroService membroService;
     
+    @Mock
+    private MembroRepository membroRepository;
+
     @Mock
     private MembroClient membroClient;
 
@@ -33,6 +37,7 @@ public class MembroServiceTest {
         membro.setIdMembro(1L);
 
         when(membroClient.cadastrar(any(MembroRequestDTO.class))).thenReturn(new MembroResponseDTO(membro));
+        when(membroRepository.save(any(Membro.class))).thenReturn(membro);
 
         MembroResponseDTO response = membroService.cadastrarMembro(dto);
 
