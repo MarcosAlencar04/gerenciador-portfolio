@@ -27,7 +27,7 @@ public class MembroService {
         try {
             return membroClient.buscarPorId(id);
         } catch (Exception e) {
-            throw new RuntimeException("Membro não encontrado na API externa");
+            throw new RuntimeException("Membro não encontrado");
         }
     }
 
@@ -35,7 +35,7 @@ public class MembroService {
         try {
             return membroClient.buscarPorNomeECargo(nome, cargo);
         } catch (Exception e) {
-            throw new RuntimeException("Membro não encontrado na API externa com nome e cargo informados");
+            throw new RuntimeException("Membro não encontrado");
         }
     }
 

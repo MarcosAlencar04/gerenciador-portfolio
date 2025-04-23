@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,16 +15,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.gerenciador_portfolio.dto.MembroRequestDTO;
 import com.example.gerenciador_portfolio.dto.MembroResponseDTO;
 import com.example.gerenciador_portfolio.entity.Membro;
-import com.example.gerenciador_portfolio.repository.MembroRepository;
+import com.example.gerenciador_portfolio.external.MembroClient;
 
 @ExtendWith(MockitoExtension.class)
 public class MembroServiceTest {
 
     @InjectMocks
     private MembroService membroService;
-
+    
     @Mock
-    private MembroRepository membroRepository;
+    private MembroClient membroClient;
 
     @Test
     void cadastrarMembro() {
@@ -34,7 +32,7 @@ public class MembroServiceTest {
         Membro membro = new Membro(dto);
         membro.setIdMembro(1L);
 
-        when(membroRepository.save(any(Membro.class))).thenReturn(membro);
+        when(membroClient.cadastrar(any(MembroRequestDTO.class))).thenReturn(new MembroResponseDTO(membro));
 
         MembroResponseDTO response = membroService.cadastrarMembro(dto);
 
@@ -46,20 +44,24 @@ public class MembroServiceTest {
     @Test
     void buscarPorNomeECargo() {
         Membro membro = new Membro(1L, "Carlos", "funcionário");
-        when(membroRepository.findByNomeAndCargo("Carlos", "funcionário")).thenReturn(Optional.of(membro));
-
+        
+        when(membroClient.buscarPorNomeECargo("Carlos", "funcionário")).thenReturn(new MembroResponseDTO(membro));
+    
         MembroResponseDTO response = membroService.buscarPorNomeECargo("Carlos", "funcionário");
-
+    
         assertEquals("Carlos", response.nome());
+        assertEquals("funcionário", response.cargo());
     }
+    
 
     @Test
     void buscaNaoEncontrada() {
-        when(membroRepository.findByNomeAndCargo("Não Cadastrado", "cargo")).thenReturn(Optional.empty());
-
+        when(membroClient.buscarPorNomeECargo("Não Cadastrado", "cargo")).thenThrow(new RuntimeException("Membro não encontrado na API externa com nome e cargo informados"));
+    
         assertThrows(RuntimeException.class, () -> {
             membroService.buscarPorNomeECargo("Não Cadastrado", "cargo");
         });
     }
+    
 }
 
