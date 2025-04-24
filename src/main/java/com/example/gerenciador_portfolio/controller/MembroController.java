@@ -18,7 +18,6 @@ import com.example.gerenciador_portfolio.dto.MembroRequestDTO;
 import com.example.gerenciador_portfolio.dto.MembroResponseDTO;
 import com.example.gerenciador_portfolio.service.MembroService;
 
-
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/membros")
@@ -27,7 +26,7 @@ public class MembroController {
     @Autowired
     private MembroService membroService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> cadastrarMembro(@RequestBody MembroRequestDTO dto) {
         try {
             membroService.cadastrarMembro(dto);
@@ -36,11 +35,15 @@ public class MembroController {
             return ResponseEntity.status(500).body(Map.of("message", "Erro ao cadastrar Membro", "error", e.getMessage()));
         }
     }
-    
 
-    @GetMapping()
-    public List<MembroResponseDTO> buscarTodos() {
-        return membroService.listarTodos();
+    @GetMapping
+    public ResponseEntity<List<MembroResponseDTO>> buscarTodos() {
+        try {
+            List<MembroResponseDTO> membros = membroService.listarTodos();
+            return ResponseEntity.ok(membros);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     @GetMapping("/{id}")
@@ -54,14 +57,19 @@ public class MembroController {
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<MembroResponseDTO> buscarPorNomeECargo(@RequestParam String nome, @RequestParam String cargo) {
+    public ResponseEntity<MembroResponseDTO> buscarPorNome(@RequestParam(required = false) String nome, @RequestParam(required = false) String cargo) {
         try{
-            MembroResponseDTO dto = membroService.buscarPorNomeECargo(nome, cargo);
-            return ResponseEntity.ok(dto);
+            if (nome != null && cargo != null) {
+                MembroResponseDTO dto = membroService.buscarPorNomeECargo(nome, cargo);
+                return ResponseEntity.ok(dto);
+            } else if (nome != null) {
+                MembroResponseDTO dto = membroService.buscarPorNome(nome);
+                return ResponseEntity.ok(dto);
+            } else {
+                return ResponseEntity.status(400).body(null);
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
-    
-    
 }

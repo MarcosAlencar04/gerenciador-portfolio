@@ -57,6 +57,18 @@ public class MembroServiceTest {
         assertEquals("Carlos", response.nome());
         assertEquals("funcionário", response.cargo());
     }
+
+    @Test
+    void buscarPorNome() {
+        Membro membro = new Membro(1L, "Carlos", "funcionário");
+        
+        when(membroClient.buscarPorNome("Carlos")).thenReturn(new MembroResponseDTO(membro));
+    
+        MembroResponseDTO response = membroService.buscarPorNome("Carlos");
+    
+        assertEquals("Carlos", response.nome());
+        assertEquals("funcionário", response.cargo());
+    }
     
 
     @Test

@@ -1,9 +1,11 @@
 package com.example.gerenciador_portfolio.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import com.example.gerenciador_portfolio.dto.ProjetoRequestDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -36,11 +38,11 @@ public class Projeto {
 
     private String nome;
     
-    private Date dataInicio;
+    private LocalDate dataInicio;
     
-    private Date dataTermino;
+    private LocalDate dataTermino;
 
-    private Date previsaoTermino;
+    private LocalDate previsaoTermino;
 
     private BigDecimal orcamentoTotal;
 
@@ -54,8 +56,24 @@ public class Projeto {
     @JoinColumn(name = "id_status")
     private Status status;
 
+    @ManyToOne
+    @JoinColumn(name = "id_risco")
+    private Risco risco;
+
     @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjetoMembro> membros = new ArrayList<>();
+
+    public enum risco {
+        BAIXO, MEDIO, ALTO
+    }
     
+    public Projeto(ProjetoRequestDTO dto) {
+        this.nome = dto.nome();
+        this.dataInicio = dto.dataInicio();
+        this.dataTermino = dto.dataTermino();
+        this.previsaoTermino = dto.previsaoTermino();
+        this.orcamentoTotal = dto.orcamentoTotal();
+        this.descricao = dto.descricao();
+    }
 
 }
