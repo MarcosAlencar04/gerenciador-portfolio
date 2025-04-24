@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.gerenciador_portfolio.dto.ProjetoRequestDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -61,6 +62,7 @@ public class Projeto {
     private Risco risco;
 
     @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<ProjetoMembro> membros = new ArrayList<>();
 
     public enum risco {

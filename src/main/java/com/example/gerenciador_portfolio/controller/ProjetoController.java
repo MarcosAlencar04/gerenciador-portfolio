@@ -3,6 +3,7 @@ package com.example.gerenciador_portfolio.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gerenciador_portfolio.dto.ProjetoRequestDTO;
@@ -83,6 +85,17 @@ public class ProjetoController {
     public ResponseEntity<Map<String, Object>> gerarRelatorio() {
         Map<String, Object> relatorio = projetoService.gerarRelatorioPortfolio();
         return ResponseEntity.ok(relatorio);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<Projeto>> listarProjetos(
+        @RequestParam(value = "page", defaultValue = "0") int pagina,
+        @RequestParam(value = "size", defaultValue = "10") int tamanho,
+        @RequestParam(value = "status", required = false) String status,
+        @RequestParam(value = "nome", required = false) String nome) {
+
+        Page<Projeto> projetos = projetoService.listarProjetos(pagina, tamanho, status, nome);
+        return ResponseEntity.ok(projetos);
     }
 
 }

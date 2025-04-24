@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.example.gerenciador_portfolio.dto.ProjetoRequestDTO;
@@ -191,4 +193,18 @@ public class ProjetoService {
         return relatorio;
     }
 
+    public Page<Projeto> listarProjetos(int pagina, int tamanho, String status, String nome) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+    
+        if (status != null && nome != null) {
+            return projetoRepository.findByStatus_StatusAndNomeContaining(status, nome, pageRequest);
+        } else if (status != null) {
+            return projetoRepository.findByStatus_Status(status, pageRequest);
+        } else if (nome != null) {
+            return projetoRepository.findByNomeContaining(nome, pageRequest);
+        }
+    
+        return projetoRepository.findAll(pageRequest);
+    }
+    
 }
