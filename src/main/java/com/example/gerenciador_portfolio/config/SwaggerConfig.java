@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
@@ -28,6 +30,17 @@ public class SwaggerConfig {
                .version("1.0")
                .description("A API expõe endpoints para gerenciar membros e projetos")
                .contact(myContact);
-       return new OpenAPI().info(information).servers(List.of(server));
-   }
+
+        SecurityScheme securityScheme = new SecurityScheme()
+            .type(SecurityScheme.Type.HTTP)
+            .scheme("basic");
+
+
+
+        return new OpenAPI().info(information).servers(List.of(server))
+                    .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
+                    .components(new io.swagger.v3.oas.models.Components()
+                    .addSecuritySchemes("basicAuth", securityScheme));
+    }
+    
 }
