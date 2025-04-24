@@ -51,18 +51,14 @@ public class ProjetoServiceTest {
     void calcularRiscoBaixo() {
         BigDecimal orcamento = BigDecimal.valueOf(50000);
         
-        // Usando LocalDate para a data de início e término
         LocalDate dataInicio = LocalDate.of(2024, 3, 10);
         LocalDate previsaoTermino = LocalDate.of(2024, 5, 11);
 
-        // Simulando o retorno do risco "BAIXO" do repositório
         Risco riscoMock = new Risco(1L, "BAIXO");
         when(riscoRepository.findByRisco("BAIXO")).thenReturn(riscoMock);
         
-        // Calculando o risco
         Risco riscoCalculado = projetoService.calcularRisco(orcamento, previsaoTermino, dataInicio);
         
-        // Verificando os resultados
         assertNotNull(riscoCalculado);
         assertEquals("BAIXO", riscoCalculado.getRisco());
     }
@@ -71,18 +67,14 @@ public class ProjetoServiceTest {
     void calcularRiscoAlto() {
         BigDecimal orcamento = BigDecimal.valueOf(600000);
         
-        // Usando LocalDate para a data de início e término
         LocalDate dataInicio = LocalDate.of(2024, 3, 10);
         LocalDate previsaoTermino = LocalDate.of(2024, 10, 7);
 
-        // Simulando o retorno do risco "ALTO" do repositório
         Risco riscoMock = new Risco(1L, "ALTO");
         when(riscoRepository.findByRisco("ALTO")).thenReturn(riscoMock);
         
-        // Calculando o risco
         Risco riscoCalculado = projetoService.calcularRisco(orcamento, previsaoTermino, dataInicio);
         
-        // Verificando os resultados
         assertNotNull(riscoCalculado);
         assertEquals("ALTO", riscoCalculado.getRisco());
     }
@@ -91,18 +83,14 @@ public class ProjetoServiceTest {
     void calcularRiscoMedio() {
         BigDecimal orcamento = BigDecimal.valueOf(300000);
         
-        // Usando LocalDate para a data de início e término
         LocalDate dataInicio = LocalDate.of(2024, 3, 10);
         LocalDate previsaoTermino = LocalDate.of(2024, 8, 4);
         
-        // Simulando o retorno do risco "MEDIO" do repositório
         Risco riscoMock = new Risco(1L, "MEDIO");
         when(riscoRepository.findByRisco(Projeto.risco.MEDIO.name())).thenReturn(riscoMock);
         
-        // Calculando o risco
         Risco riscoCalculado = projetoService.calcularRisco(orcamento, previsaoTermino, dataInicio);
         
-        // Verificando os resultados
         assertNotNull(riscoCalculado);
         assertEquals("MEDIO", riscoCalculado.getRisco());
     }
@@ -148,7 +136,6 @@ public class ProjetoServiceTest {
 
         when(projetoRepository.findByNome(nomeProjeto)).thenReturn(Optional.of(projeto));
 
-        // Teste para exceção, pois o status do projeto é "em andamento"
         assertThrows(RuntimeException.class, () -> projetoService.excluirProjeto(nomeProjeto));
     }
 
